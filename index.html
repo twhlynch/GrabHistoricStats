@@ -5,38 +5,102 @@
         <title>Plays over time</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDS57RBQ3Q"></script>
+        <meta name="description" content="Grab Historic Stats" />
+        <meta name="author" content="twhlynch" />
+        <meta property="og:title" content="Grab Historic Stats | .index" />
+        <meta property="og:description" content="Grab Historic Stats" />
+        <meta property="og:site_name" content="Grab Historic Stats | .index" />
+        <meta property="og:locale" content="en_us" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://twhlynch.me/GrabHistoricStats" />
+        <meta property="og:image" content="https://grab-tools.live/favicon.gif" />
+        <link rel="shortcut icon" href="https://grab-tools.live/favicon.gif" type="image/x-icon">
         <script>
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
             gtag('js', new Date());
             gtag('config', 'G-BDS57RBQ3Q');
         </script>
+        <link rel="stylesheet" href="https://grab-tools.live/styles.css" />
         <style>
             body {
-                margin: 0;
-                padding: 0;
-                background-color: #b7b7b7;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                justify-content: center;
             }
             canvas {
                 width: 50vw;
+                position: static;
+                z-index: 1;
+                background: #6e9bd2c5;
+                padding: 1rem;
+                border-radius: 6px;
+                opacity: 1;
+                pointer-events: all;
+            }
+            nav {
+                display: flex;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100vw;
+                padding: 0;
+                margin: 0;
+                height: 50px;
+                flex-direction: row;
+                align-items: center;
+                justify-content: space-between;
+            }
+            nav a {
+                background-color: transparent;
+                text-align: center;
+                text-decoration: none;
+                font-size: 16px;
+                margin: 4px 2px;
+                cursor: pointer;
+                color: #cfe0ea;
+                padding: 10px;
+                border: dashed 2px #cfe0ea22;
+                font-weight: 600;
+            }
+            #description {
+                font-size: 12px;
+                margin-top: 0;
+            }
+            #creators {
+                margin: 0;
+            }
+            #title {
+                font-size: 18px;
+                font-weight: 600;
+                color: #4683ce;
             }
         </style>
     </head>
     <body>
-        <a href="javascript:(function() {
-            var url = window.location.href;
-            var idRegex = /level=([^&]+)/;
-            var match = url.match(idRegex);
-            
-            if (match && match[1]) {
-                var id = match[1];
-                var newUrl = 'http://twhlynch.me/GrabHistoricStats?id=' + id;
-                window.location.href = newUrl;
-            } else {
-                alert('Could not find level ID in the URL.');
-            }
-        })();">Bookmarklet</a>
-        <canvas id="canvas"></canvas>
+        <nav>
+            <a href="https://grab-tools.live">Grab Tools</a>
+            <a href="javascript:(function() {
+                var url = window.location.href;
+                var idRegex = /level=([^&]+)/;
+                var match = url.match(idRegex);
+                
+                if (match && match[1]) {
+                    var id = match[1];
+                    var newUrl = 'http://twhlynch.me/GrabHistoricStats?id=' + id;
+                    window.location.href = newUrl;
+                } else {
+                    alert('Could not find level ID in the URL.');
+                }
+            })();">Bookmarklet</a>
+        </nav>
+        <main>
+            <a id="title"></a>
+            <p id="creators"></p>
+            <p id="description"></p>
+            <canvas id="canvas"></canvas>
+        </main>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
             const id = urlParams.get('id');
@@ -65,8 +129,8 @@
                             data: {
                                 labels: sorted_plays,
                                 datasets: [{
-                                    pointRadius: 3,
-                                    pointBackgroundColor: "#bbb",
+                                    pointRadius: 1,
+                                    pointBackgroundColor: "#555",
                                     data: sorted_plays
                                 }]
                             },
@@ -80,6 +144,15 @@
                         });
                     }
                 });
+
+                fetch(`https://api.slin.dev/grab/v1/details/${id.replace(":", "/")}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        document.getElementById('title').innerHTML = data.title;
+                        document.getElementById('creators').innerHTML = data.creators;
+                        document.getElementById('description').innerHTML = data.description;
+                        document.getElementById('title').href = `https://grabvr.quest/levels/viewer/?level=${id}`;
+                    });
         </script>
     </body>
 </html>
