@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Plays over time</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+                background-color: #b7b7b7;
+            }
+            canvas {
+                width: 50vw;
+            }
+        </style>
+    </head>
+    <body>
+        <canvas id="canvas"></canvas>
+        <script>
+            const urlParams = new URLSearchParams(window.location.search);
+            const id = urlParams.get('id');
+
+            fetch('plays_over_time.json')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.hasOwnProperty(id)) {
+                        const data_data = data[id];
+
+                        let level_plays = data_data['plays'];
+                        let sorted_plays = [];
+                        let max = 0;
+                        for (let i = 0; i < level_plays.length; i++) {
+                            sorted_plays.push(level_plays[i][1]);
+                            if (level_plays[i][1] > max) {
+                                max = level_plays[i][1];
+                            }
+                        }
+                        sorted_plays.sort(function(a, b) {
+                            return a - b;
+                        });
+
+                        const chart = new Chart("canvas", {
+                            type: "line",
+                            data: {
+                                labels: sorted_plays,
+                                datasets: [{
+                                    pointRadius: 3,
+                                    pointBackgroundColor: "#bbb",
+                                    data: sorted_plays
+                                }]
+                            },
+                            options: {
+                                legend: {display: false},
+                                scales: {
+                                    xAxes: [{ticks: {min: 0, max: sorted_plays.length}}],
+                                    yAxes: [{ticks: {min: 0, max:max}}],
+                                }
+                            }
+                        });
+                    }
+                });
+        </script>
+    </body>
+</html>
