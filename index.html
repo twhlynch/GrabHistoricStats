@@ -23,6 +23,19 @@
         </style>
     </head>
     <body>
+        <a href="javascript:(function() {
+            var url = window.location.href;
+            var idRegex = /level=([^&]+)/;
+            var match = url.match(idRegex);
+            
+            if (match && match[1]) {
+                var id = match[1];
+                var newUrl = 'http://twhlynch.me/GrabHistoricStats?id=' + id;
+                window.location.href = newUrl;
+            } else {
+                alert('Could not find level ID in the URL.');
+            }
+        })();">Bookmarklet</a>
         <canvas id="canvas"></canvas>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
