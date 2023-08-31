@@ -4,7 +4,7 @@
         <meta charset="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <title>Plays over time</title>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
         <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDS57RBQ3Q"></script>
         <meta name="description" content="Grab Historic Stats" />
         <meta name="author" content="twhlynch" />
@@ -31,7 +31,6 @@
                 justify-content: center;
             }
             canvas {
-                width: 50vw;
                 position: static;
                 z-index: 1;
                 background: #6e9bd2c5;
@@ -136,21 +135,20 @@
                                 datasets: [{
                                     label: "Total plays",
                                     pointRadius: 2,
-                                    pointBackgroundColor: "#555",
+                                    hitRadius: 5,
+                                    backgroundColor: "#555",
+                                    borderColor: "#555",
                                     data: sorted_plays,
                                     tension: 0.1
                                 }, {
                                     label: "Plays per day",
                                     pointRadius: 2,
-                                    pointBackgroundColor: "#0f0",
+                                    hitRadius: 5,
+                                    backgroundColor: "#0f0",
+                                    borderColor: "#0f0",
                                     data: play_diffs,
                                     tension: 0.1
                                 }]
-                            },
-                            options: {
-                                legend: {
-                                    display: false
-                                }
                             }
                         });
                     }
