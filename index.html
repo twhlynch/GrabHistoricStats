@@ -113,33 +113,43 @@
                         const data_data = data[id];
 
                         let level_plays = data_data['plays'];
+                        let timestamps = [];
                         let sorted_plays = [];
-                        let max = 0;
+                        let play_diffs = [];
+
+                        level_plays.sort(function(a, b) {
+                            return a[1] - b[1];
+                        });
+                        
+                        last = 0;
                         for (let i = 0; i < level_plays.length; i++) {
                             sorted_plays.push(level_plays[i][1]);
-                            if (level_plays[i][1] > max) {
-                                max = level_plays[i][1];
-                            }
+                            timestamps.push(level_plays[i][0]);
+                            play_diffs.push(level_plays[i][1] - last);
+                            last = level_plays[i][1];
                         }
-                        sorted_plays.sort(function(a, b) {
-                            return a - b;
-                        });
-
+                            
                         const chart = new Chart("canvas", {
                             type: "line",
                             data: {
-                                labels: sorted_plays,
+                                labels: timestamps,
                                 datasets: [{
-                                    pointRadius: 1,
+                                    label: "Total plays",
+                                    pointRadius: 2,
                                     pointBackgroundColor: "#555",
-                                    data: sorted_plays
+                                    data: sorted_plays,
+                                    tension: 0.1
+                                }, {
+                                    label: "Plays per day",
+                                    pointRadius: 2,
+                                    pointBackgroundColor: "#0f0",
+                                    data: play_diffs,
+                                    tension: 0.1
                                 }]
                             },
                             options: {
-                                legend: {display: false},
-                                scales: {
-                                    xAxes: [{ticks: {min: 0, max: sorted_plays.length}}],
-                                    yAxes: [{ticks: {min: 0, max:max}}],
+                                legend: {
+                                    display: false
                                 }
                             }
                         });
