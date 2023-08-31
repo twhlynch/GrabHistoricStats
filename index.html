@@ -115,6 +115,7 @@
                         let timestamps = [];
                         let sorted_plays = [];
                         let play_diffs = [];
+                        let max = 0;
 
                         level_plays.sort(function(a, b) {
                             return a[1] - b[1];
@@ -123,11 +124,20 @@
                         last = 0;
                         for (let i = 0; i < level_plays.length; i++) {
                             sorted_plays.push(level_plays[i][1]);
+
+                            if (level_plays[i][1] > max) {
+                                max = level_plays[i][1];
+                            }
+
                             timestamps.push(level_plays[i][0]);
                             play_diffs.push(level_plays[i][1] - last);
                             last = level_plays[i][1];
                         }
-                            
+
+                        timestamps = timestamps.map(function(x) {
+                            return new Date(x * 1000).getDate() + '/' + new Date(x * 1000).getMonth();
+                        });
+                        
                         const chart = new Chart("canvas", {
                             type: "line",
                             data: {
@@ -149,6 +159,13 @@
                                     data: play_diffs,
                                     tension: 0.1
                                 }]
+                            },
+                            options: {
+                                plugins: {
+                                    legend: {
+                                        display: false
+                                    }
+                                }
                             }
                         });
                     }
