@@ -103,7 +103,7 @@
         </main>
         <script>
             const urlParams = new URLSearchParams(window.location.search);
-            const id = urlParams.get('id');
+            const id = urlParams.get('level');
 
             fetch('plays_over_time.json')
                 .then(response => response.json())
