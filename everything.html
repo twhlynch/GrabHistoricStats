@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Plays over time</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDS57RBQ3Q"></script>
+    <meta name="description" content="Grab Historic Stats" />
+    <meta name="author" content="twhlynch" />
+    <meta property="og:title" content="Grab Historic Stats | .index" />
+    <meta property="og:description" content="Grab Historic Stats" />
+    <meta property="og:site_name" content="Grab Historic Stats | .index" />
+    <meta property="og:locale" content="en_us" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="http://twhlynch.me/GrabHistoricStats" />
+    <meta property="og:image" content="https://grab-tools.live/favicon.gif" />
+    <link rel="shortcut icon" href="https://grab-tools.live/favicon.gif" type="image/x-icon">
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-BDS57RBQ3Q');
+    </script>
+    <link rel="stylesheet" href="https://grab-tools.live/styles.css" />
+</head>
+<body>
+    <input type="number" id="num">
+    <input type="button" id="submit" value="view">
+    <canvas id="chart"></canvas>
+    <script>
+
+        fetch('plays_over_time.json')
+        .then(response => response.json())
+        .then(data => {
+            const formatted = Object.entries(data);
+            const labels = formatted.map(entry => entry[1].title);
+            const values = formatted.map(entry => entry[1].plays);
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            let chart;
+            document.getElementById('submit').addEventListener('click', (e) => {
+                let i = document.getElementById('num').value;
+                let graphValues = values.map(entry => (entry[i] || [0,0])[1]);
+
+                try {
+                    chart.destroy();
+                } catch (e) {
+                    console.log(e);
+                }
+
+                chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Plays over time',
+                            data: graphValues,
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.2)',
+                            ],
+                            borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                            ],
+                            borderWidth: 1
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+
+        });
+    </script>
+</body>
+</html>

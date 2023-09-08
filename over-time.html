@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Plays over time</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDS57RBQ3Q"></script>
+        <meta name="description" content="Grab Historic Stats" />
+        <meta name="author" content="twhlynch" />
+        <meta property="og:title" content="Grab Historic Stats | .index" />
+        <meta property="og:description" content="Grab Historic Stats" />
+        <meta property="og:site_name" content="Grab Historic Stats | .index" />
+        <meta property="og:locale" content="en_us" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://twhlynch.me/GrabHistoricStats" />
+        <meta property="og:image" content="https://grab-tools.live/favicon.gif" />
+        <link rel="shortcut icon" href="https://grab-tools.live/favicon.gif" type="image/x-icon">
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BDS57RBQ3Q');
+        </script>
+        <link rel="stylesheet" href="https://grab-tools.live/styles.css" />
+    </head>
+<body>
+    <canvas id="chart"></canvas>
+    <script>
+        fetch('plays_over_time.json')
+        .then(response => response.json())
+        .then(data => {
+            const formatted = Object.entries(data);
+            const labels = formatted[0][1].plays.map(entry => entry[0]); // Assuming all entries have the same x-values
+            const datasets = [];
+
+            formatted.forEach((entry, index) => {
+                const values = entry[1].plays.map(play => play[1]);
+                const randomColor = getRandomColor(); // Generate a random color for each dataset
+
+                datasets.push({
+                    label: entry[1].title,
+                    data: values,
+                    backgroundColor: [
+                        `rgba(${randomColor}, 0.2)`,
+                    ],
+                    borderColor: [
+                        `rgba(${randomColor}, 1)`,
+                    ],
+                    borderWidth: 1,
+                });
+            });
+
+            const ctx = document.getElementById('chart').getContext('2d');
+            let chart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: datasets,
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true
+                            }
+                        }
+                    }
+                });
+            });
+
+            // Helper function to generate a random color
+            function getRandomColor() {
+                const r = Math.floor(Math.random() * 256);
+                const g = Math.floor(Math.random() * 256);
+                const b = Math.floor(Math.random() * 256);
+                return `${r},${g},${b}`;
+            }
+    </script>
+</body>
+</html>
