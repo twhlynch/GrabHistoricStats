@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Plays Graph</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.js"></script>
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-BDS57RBQ3Q"></script>
+        <meta name="description" content="Grab Historic Stats" />
+        <meta name="author" content="twhlynch" />
+        <meta property="og:title" content="Grab Historic Stats | .index" />
+        <meta property="og:description" content="Grab Historic Stats" />
+        <meta property="og:site_name" content="Grab Historic Stats | .index" />
+        <meta property="og:locale" content="en_us" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="http://twhlynch.me/GrabHistoricStats" />
+        <meta property="og:image" content="https://grab-tools.live/favicon.gif" />
+        <link rel="shortcut icon" href="https://grab-tools.live/favicon.gif" type="image/x-icon">
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-BDS57RBQ3Q');
+        </script>
+        <link rel="stylesheet" href="https://grab-tools.live/styles.css" />
+    </head>
+    <body>
+        <script>
+            const url = 'https://dotindex.pythonanywhere.com/top_plays_graph';
+            fetch(url)
+                .then(response => {
+                    if (response.ok) {
+                        return response.blob();
+                    } else {
+                        throw new Error('Failed to fetch PNG file');
+                    }
+                })
+                .then(blob => {
+                    const imageElement = document.createElement('img');
+                    imageElement.src = URL.createObjectURL(blob);
+                    document.body.appendChild(imageElement);
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        </script>
+    </body>
+</html>
