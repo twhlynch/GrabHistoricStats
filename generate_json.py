@@ -16,6 +16,9 @@ def download_commit(commit, file_path):
     commit_hash = commit.hexsha
     commit_date = commit.committed_date
     commit_message = commit.message.strip()
+    if f"{commit_date}_{commit_message}.json" in os.listdir(output_dir):
+        print(f"Skipping {commit_date}_{commit_message}.json")
+        return
 
     file_content = repo.git.show(f"{commit_hash}:{file_path}")
     version_filename = f"{commit_date}_{commit_message}.txt"
